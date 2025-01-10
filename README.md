@@ -1,4 +1,4 @@
-# GoHF
+# GoHF ✨
 
 <img align="right" width="100px" src="https://raw.githubusercontent.com/gohf-http/logo/refs/heads/main/main.png">
 
@@ -12,8 +12,52 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf.svg)](https://pkg.
 
 **GO** **H**ttp **F**ramework
 
-# Installation
+# ❓ WHY GoHF
+
+- [Easier error handling](#feature-easier-error-handing)
+- [Support middleware](#feature-middleware)
+- Support sub-routers (route grouping)
+- Customizable reponse
+- Lightweight
+- Based on net/http
+
+# 📍 Install GoHF
 
 ```sh
 go get github.com/gohf-http/gohf
+```
+
+# 🪄 Features
+
+### Feature: Easier Error Handing
+
+```go
+router.Handle("/greeting", func(c *gohf.Context) gohf.Response {
+  name := c.Req.GetQuery("name")
+  if name == "" {
+    return gohf_responses.NewErrorResponse(
+      http.StatusBadRequest,
+      errors.New("Name is required"),
+    )
+  }
+
+  greeting := fmt.Sprintf("Hello, %s!", name)
+  return gohf_responses.NewTextResponse(http.StatusOK, greeting)
+})
+```
+
+### Feature: Middleware
+
+```go
+router.Use(func(c *gohf.Context) gohf.Response {
+  token := c.Req.GetHeader("Authorization")
+  if !isValidToken(token) {
+    return gohf_responses.NewErrorResponse(
+      http.StatusUnauthorized,
+      errors.New("Invalid token"),
+    )
+  }
+
+  return c.Next()
+})
 ```
