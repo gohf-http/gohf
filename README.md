@@ -16,10 +16,10 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf.svg)](https://pkg.
 
 - [Easier error handling](#feature-easier-error-handing)
 - [Support middleware](#feature-middleware)
-- Support sub-routers (route grouping)
-- Customizable reponse
+- [Support sub-routers (route grouping)](#feature-sub-router)
+- [Customizable response](https://github.com/gohf-http/gohf/blob/main/gohf_responses/json_response.go)
 - Lightweight
-- Based on net/http
+- Based on [net/http](https://pkg.go.dev/net/http)
 
 # 📍 Install GoHF
 
@@ -65,3 +65,13 @@ router.Use(func(c *gohf.Context) gohf.Response {
 This is how middleware works in GoHF.
 
 ![middleware](https://raw.githubusercontent.com/gohf-http/assets/refs/heads/main/middleware.png)
+
+### Feature: Sub-Router
+
+```go
+authRouter := router.SubRouter("/auth")
+authRouter.Use(AuthMiddleware)
+authRouter.Handle("GET /users", func(c *gohf.Context) gohf.Response {
+  // ...
+})
+```
