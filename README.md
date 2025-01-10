@@ -41,7 +41,7 @@ import (
 ### Feature: Easier Error Handing
 
 ```go
-router.Handle("/greeting", func(c *gohf.Context) gohf.Response {
+router.Handle("GET /greeting", func(c *gohf.Context) gohf.Response {
   name := c.Req.GetQuery("name")
   if name == "" {
     return gohf_responses.NewErrorResponse(
@@ -115,7 +115,7 @@ import (
 func main() {
   router := gohf.New()
 
-  router.Handle("/greeting", func(c *gohf.Context) gohf.Response {
+  router.Handle("GET /greeting", func(c *gohf.Context) gohf.Response {
     name := c.Req.GetQuery("name")
     if name == "" {
       return gohf_responses.NewErrorResponse(
