@@ -21,11 +21,13 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf.svg)](https://pkg.
 - Lightweight
 - Based on [net/http](https://pkg.go.dev/net/http)
 
-# 📍 Install GoHF
+# 📍 Getting started
 
 ```sh
 go get github.com/gohf-http/gohf
 ```
+
+[Hello GoHF Example](#-hello-gohf-example)
 
 # 🪄 Features
 
@@ -74,4 +76,47 @@ authRouter.Use(AuthMiddleware)
 authRouter.Handle("GET /users", func(c *gohf.Context) gohf.Response {
   // ...
 })
+```
+
+# 📘 Hello GoHF Example
+
+```go
+package main
+
+import (
+  "errors"
+  "fmt"
+  "log"
+  "net/http"
+
+  "github.com/gohf-http/gohf"
+  "github.com/gohf-http/gohf/gohf_responses"
+)
+
+func main() {
+  router := gohf.New()
+
+  router.Handle("/greeting", func(c *gohf.Context) gohf.Response {
+    name := c.Req.GetQuery("name")
+    if name == "" {
+      return gohf_responses.NewErrorResponse(
+        http.StatusBadRequest,
+        errors.New("Name is required"),
+      )
+    }
+
+    greeting := fmt.Sprintf("Hello, %s!", name)
+    return gohf_responses.NewTextResponse(http.StatusOK, greeting)
+  })
+
+  router.Use(func(c *gohf.Context) gohf.Response {
+    return gohf_responses.NewErrorResponse(
+      http.StatusNotFound,
+      errors.New("Page not found"),
+    )
+  })
+
+  mux := router.CreateServeMux()
+  log.Fatal(http.ListenAndServe(":8080", mux))
+}
 ```
