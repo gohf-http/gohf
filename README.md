@@ -1,6 +1,6 @@
 # GoHF ✨
 
-<img align="right" width="100px" src="https://raw.githubusercontent.com/gohf-http/logo/refs/heads/main/main.png">
+<img align="right" width="100px" src="https://raw.githubusercontent.com/gohf-http/assets/refs/heads/main/logo.png">
 
 [![build](https://github.com/gohf-http/gohf/actions/workflows/test.yml/badge.svg)](https://github.com/gohf-http/gohf/actions/workflows/test.yml)
 [![Go
