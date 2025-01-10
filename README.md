@@ -61,3 +61,7 @@ router.Use(func(c *gohf.Context) gohf.Response {
   return c.Next()
 })
 ```
+
+This is how middleware works in GoHF.
+
+![middleware](https://raw.githubusercontent.com/gohf-http/assets/refs/heads/main/middleware.png)
