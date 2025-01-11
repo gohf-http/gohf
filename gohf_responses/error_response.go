@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/gohf-http/gohf"
+	"github.com/gohf-http/gohf/v2"
 )
 
 type ErrorResponse[T interface{}] struct {
