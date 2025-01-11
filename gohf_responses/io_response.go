@@ -4,8 +4,9 @@ import (
 	"context"
 	"errors"
 	"io"
+	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type IoResponse struct {
@@ -20,12 +21,12 @@ func NewIoResponse(statusCode int, reader io.Reader) IoResponse {
 	}
 }
 
-func (response IoResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res IoResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetStatus(response.Status)
+	w.WriteHeader(res.Status)
 	//nolint:errcheck
-	io.Copy(res, response.Reader)
+	io.Copy(w, res.Reader)
 }

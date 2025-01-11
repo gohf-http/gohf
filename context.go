@@ -1,7 +1,9 @@
 package gohf
 
+import "net/http"
+
 type Response interface {
-	Send(ResponseWriter, *Request)
+	Send(http.ResponseWriter, *Request)
 }
 
 type HandlerFunc func(c *Context) Response
@@ -9,15 +11,17 @@ type HandlerFunc func(c *Context) Response
 type NextFunc func() Response
 
 type Context struct {
-	Res  ResponseWriter
-	Req  *Request
-	Next NextFunc
+	w         http.ResponseWriter
+	ResHeader http.Header
+	Req       *Request
+	Next      NextFunc
 }
 
-func newContext(res ResponseWriter, req *Request) *Context {
+func newContext(w http.ResponseWriter, r *Request) *Context {
 	return &Context{
-		Res:  res,
-		Req:  req,
-		Next: func() Response { return nil },
+		w:         w,
+		ResHeader: w.Header(),
+		Req:       r,
+		Next:      func() Response { return nil },
 	}
 }

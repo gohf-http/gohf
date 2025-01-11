@@ -13,9 +13,8 @@ func newHttpHandler() *httpHandler {
 }
 
 func (httpHandler *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	res := newResponseWriter(w)
 	req := newRequest(r)
-	c := newContext(res, req)
+	c := newContext(w, req)
 
 	var handle func(idx int) Response
 	handle = func(idx int) Response {
@@ -29,7 +28,7 @@ func (httpHandler *httpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request
 	}
 
 	if response := handle(0); response != nil {
-		response.Send(c.Res, c.Req)
+		response.Send(w, c.Req)
 	}
 }
 

@@ -3,8 +3,9 @@ package gohf_responses
 import (
 	"context"
 	"errors"
+	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type TextResponse struct {
@@ -19,13 +20,13 @@ func NewTextResponse(statusCode int, text string) TextResponse {
 	}
 }
 
-func (response TextResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res TextResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetHeader("Content-Type", "text/plain")
-	res.SetStatus(response.Status)
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(res.Status)
 	//nolint:errcheck
-	res.Write([]byte(response.Text))
+	w.Write([]byte(res.Text))
 }

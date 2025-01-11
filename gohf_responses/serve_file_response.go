@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type ServeFileResponse struct {
@@ -18,10 +18,10 @@ func NewServeFileResponse(filepath string) ServeFileResponse {
 	}
 }
 
-func (response ServeFileResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res ServeFileResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	http.ServeFile(res.GetHttpResponseWriter(), req.GetHttpRequest(), response.Filepath)
+	http.ServeFile(w, req.GetHttpRequest(), res.Filepath)
 }

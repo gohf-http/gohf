@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type ServeContentResponse struct {
@@ -24,16 +24,16 @@ func NewServeContentResponse(name string, modtime time.Time, content io.ReadSeek
 	}
 }
 
-func (response ServeContentResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res ServeContentResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
 	http.ServeContent(
-		res.GetHttpResponseWriter(),
+		w,
 		req.GetHttpRequest(),
-		response.Name,
-		response.Modtime,
-		response.Content,
+		res.Name,
+		res.Modtime,
+		res.Content,
 	)
 }

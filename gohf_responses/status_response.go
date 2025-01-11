@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type StatusResponse struct {
@@ -18,13 +18,13 @@ func NewStatusResponse(statusCode int) StatusResponse {
 	}
 }
 
-func (response StatusResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res StatusResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetHeader("Content-Type", "text/plain")
-	res.SetStatus(response.Status)
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(res.Status)
 	//nolint:errcheck
-	res.Write([]byte(http.StatusText(response.Status)))
+	w.Write([]byte(http.StatusText(res.Status)))
 }

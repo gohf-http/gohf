@@ -15,131 +15,94 @@ type textResponse struct {
 	text   string
 }
 
-func (response textResponse) Send(res ResponseWriter, req *Request) {
+func (response textResponse) Send(w http.ResponseWriter, req *Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetHeader("Content-Type", "text/plain")
-	res.SetStatus(response.status)
+	w.Header().Set("Content-Type", "text/plain")
+	w.WriteHeader(response.status)
 	//nolint:errcheck
-	res.Write([]byte(response.text))
+	w.Write([]byte(response.text))
 }
 
-func TestRouter(t *testing.T) {
-	sendRequest := func(handler http.Handler, method string, target string) ([]byte, error) {
-		req := httptest.NewRequest(method, target, nil)
-		w := httptest.NewRecorder()
-
-		handler.ServeHTTP(w, req)
-
-		res := w.Result()
-		defer res.Body.Close()
-		return io.ReadAll(res.Body)
+func TestHelloGoHF(t *testing.T) {
+	type result struct {
+		body   string
+		status int
+	}
+	testcases := map[string]result{
+		"/": {
+			body:   "Page not found",
+			status: http.StatusNotFound,
+		},
+		"/asd": {
+			body:   "Page not found",
+			status: http.StatusNotFound,
+		},
+		"/greeting": {
+			body:   "Name is required",
+			status: http.StatusBadRequest,
+		},
+		"/greeting?name": {
+			body:   "Name is required",
+			status: http.StatusBadRequest,
+		},
+		"/greeting?name=": {
+			body:   "Name is required",
+			status: http.StatusBadRequest,
+		},
+		"/greeting?name=GoHF": {
+			body:   "Hello, GoHF!",
+			status: http.StatusOK,
+		},
 	}
 
-	t.Run("should response \"Hello, GoHF!\"", func(t *testing.T) {
-		router := New()
+	router := New()
 
-		router.Handle("GET /greeting", func(c *Context) Response {
-			name := c.Req.GetQuery("name")
-			if name == "" {
-				return textResponse{
-					http.StatusBadRequest,
-					"Name is required",
-				}
-			}
-
-			greeting := fmt.Sprintf("Hello, %s!", name)
-			return textResponse{http.StatusOK, greeting}
-		})
-
-		router.Use(func(c *Context) Response {
+	router.Handle("GET /greeting", func(c *Context) Response {
+		name := c.Req.GetQuery("name")
+		if name == "" {
 			return textResponse{
-				http.StatusNotFound,
-				"Page not found",
+				http.StatusBadRequest,
+				"Name is required",
 			}
-		})
-
-		mux := router.CreateServeMux()
-
-		data, err := sendRequest(mux, http.MethodGet, "/greeting?name=GoHF")
-
-		if err != nil {
-			t.Errorf("Error: %v", err)
 		}
-		if got, want := string(data), "Hello, GoHF!"; got != want {
-			t.Errorf("got:\"%s\" want:\"%s\"", got, want)
+
+		greeting := fmt.Sprintf("Hello, %s!", name)
+		return textResponse{http.StatusOK, greeting}
+	})
+
+	router.Use(func(c *Context) Response {
+		return textResponse{
+			http.StatusNotFound,
+			"Page not found",
 		}
 	})
 
-	t.Run("should response \"Name is required\"", func(t *testing.T) {
-		router := New()
+	mux := router.CreateServeMux()
 
-		router.Handle("GET /greeting", func(c *Context) Response {
-			name := c.Req.GetQuery("name")
-			if name == "" {
-				return textResponse{
-					http.StatusBadRequest,
-					"Name is required",
-				}
+	for url, result := range testcases {
+		name := fmt.Sprintf("Test Hello GoHF: %s", url)
+		t.Run(name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, url, nil)
+			w := httptest.NewRecorder()
+
+			mux.ServeHTTP(w, req)
+
+			res := w.Result()
+			defer res.Body.Close()
+
+			data, err := io.ReadAll(res.Body)
+			if err != nil {
+				t.Errorf("unexpected error %v", err)
 			}
-
-			greeting := fmt.Sprintf("Hello, %s!", name)
-			return textResponse{http.StatusOK, greeting}
-		})
-
-		router.Use(func(c *Context) Response {
-			return textResponse{
-				http.StatusNotFound,
-				"Page not found",
+			if got, want := string(data), result.body; got != want {
+				t.Errorf("body error. got:\"%v\" want:\"%v\"", got, want)
 			}
-		})
-
-		mux := router.CreateServeMux()
-
-		data, err := sendRequest(mux, http.MethodGet, "/greeting")
-
-		if err != nil {
-			t.Errorf("Error: %v", err)
-		}
-		if got, want := string(data), "Name is required"; got != want {
-			t.Errorf("got:\"%s\" want:\"%s\"", got, want)
-		}
-	})
-
-	t.Run("should response \"Page not found\"", func(t *testing.T) {
-		router := New()
-
-		router.Handle("GET /greeting", func(c *Context) Response {
-			name := c.Req.GetQuery("name")
-			if name == "" {
-				return textResponse{
-					http.StatusBadRequest,
-					"Name is required",
-				}
-			}
-
-			greeting := fmt.Sprintf("Hello, %s!", name)
-			return textResponse{http.StatusOK, greeting}
-		})
-
-		router.Use(func(c *Context) Response {
-			return textResponse{
-				http.StatusNotFound,
-				"Page not found",
+			if got, want := res.StatusCode, result.status; got != want {
+				t.Errorf("status error. got:\"%v\" want:\"%v\"", got, want)
 			}
 		})
-
-		mux := router.CreateServeMux()
-
-		data, err := sendRequest(mux, http.MethodGet, "/greeting2?name=GoHF")
-
-		if err != nil {
-			t.Errorf("Error: %v", err)
-		}
-		if got, want := string(data), "Page not found"; got != want {
-			t.Errorf("got:\"%s\" want:\"%s\"", got, want)
-		}
-	})
+	}
 }

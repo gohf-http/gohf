@@ -4,7 +4,7 @@
 
 [![Test](https://github.com/gohf-http/gohf/actions/workflows/test.yml/badge.svg)](https://github.com/gohf-http/gohf/actions/workflows/test.yml)
 [![Go
-Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v3.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v3)
+Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v4.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v4)
 [![Release](https://img.shields.io/github/release/gohf-http/gohf.svg?style=flat-square)](https://github.com/gohf-http/gohf/releases)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/gohf-http/gohf#readme)
 [![Maintenance](https://img.shields.io/badge/Maintained-yes-green.svg)](https://github.com/gohf-http/gohf/graphs/commit-activity)
@@ -24,13 +24,13 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v3.svg)](https://p
 # 📍 Getting started
 
 ```sh
-go get github.com/gohf-http/gohf/v3
+go get github.com/gohf-http/gohf/v4
 ```
 
 ```go
 import (
-  "github.com/gohf-http/gohf/v3"
-  "github.com/gohf-http/gohf/v3/gohf_responses"
+  "github.com/gohf-http/gohf/v4"
+  "github.com/gohf-http/gohf/v4/gohf_responses"
 )
 ```
 
@@ -91,7 +91,7 @@ You can define a customizable response by implementing `gohf.Response` interface
 
 ```go
 type Response interface {
-	Send(ResponseWriter, *Request)
+	Send(http.ResponseWriter, *gohf.Request)
 }
 ```
 
@@ -110,8 +110,8 @@ import (
   "log"
   "net/http"
 
-  "github.com/gohf-http/gohf/v3"
-  "github.com/gohf-http/gohf/v3/gohf_responses"
+  "github.com/gohf-http/gohf/v4"
+  "github.com/gohf-http/gohf/v4/gohf_responses"
 )
 
 func main() {
