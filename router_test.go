@@ -106,3 +106,276 @@ func TestHelloGoHF(t *testing.T) {
 		})
 	}
 }
+
+func TestNestedRouter(t *testing.T) {
+	type result struct {
+		status         int
+		test1          bool
+		test2          bool
+		test3          bool
+		test4          bool
+		test5          bool
+		test1notfound  bool
+		routernotfound bool
+	}
+	testcases := map[string]result{
+		"/": {
+			status:         http.StatusNotFound,
+			test1:          false,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: true,
+		},
+		"/test": {
+			status:         http.StatusNotFound,
+			test1:          false,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: true,
+		},
+		"/test1": {
+			status:         http.StatusMovedPermanently,
+			test1:          false,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: false,
+		},
+		"/test1/": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test2": {
+			status:         http.StatusMovedPermanently,
+			test1:          false,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: false,
+		},
+		"/test1/test2/": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          true,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test2/test": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          true,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test2/test3": {
+			status:         http.StatusOK,
+			test1:          true,
+			test2:          true,
+			test3:          true,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: false,
+		},
+		"/test1/test2/test3/": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          true,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test2/test3/aaa": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          true,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test4": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test4/asd": {
+			status:         http.StatusMovedPermanently,
+			test1:          false,
+			test2:          false,
+			test3:          false,
+			test4:          false,
+			test5:          false,
+			test1notfound:  false,
+			routernotfound: false,
+		},
+		"/test1/test4/asd/": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          true,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test4/asd/test": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          true,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test4/asd/test5": {
+			status:         http.StatusOK,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          true,
+			test5:          true,
+			test1notfound:  false,
+			routernotfound: false,
+		},
+		"/test1/test4/asd/test5/": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          true,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+		"/test1/test4/asd/test5/asd": {
+			status:         http.StatusNotFound,
+			test1:          true,
+			test2:          false,
+			test3:          false,
+			test4:          true,
+			test5:          false,
+			test1notfound:  true,
+			routernotfound: false,
+		},
+	}
+
+	router := New()
+
+	test1Router := router.SubRouter("/test1")
+	test1Router.Use(func(c *Context) Response {
+		c.ResHeader.Set("test1", "1")
+		return c.Next()
+	})
+
+	test2Router := test1Router.SubRouter("/test2")
+	test2Router.Use(func(c *Context) Response {
+		c.ResHeader.Set("test2", "1")
+		return c.Next()
+	})
+
+	test2Router.Handle("/test3", func(c *Context) Response {
+		c.ResHeader.Set("test3", "1")
+		return textResponse{http.StatusOK, ""}
+	})
+
+	test4Router := test1Router.SubRouter("/test4/{id}")
+	test4Router.Use(func(c *Context) Response {
+		c.ResHeader.Set("test4", "1")
+		return c.Next()
+	})
+
+	test4Router.Handle("/test5", func(c *Context) Response {
+		c.ResHeader.Set("test5", "1")
+		return textResponse{http.StatusOK, ""}
+	})
+
+	test1Router.Use(func(c *Context) Response {
+		c.ResHeader.Set("test1-not-found", "1")
+		return textResponse{http.StatusNotFound, ""}
+	})
+
+	router.Use(func(c *Context) Response {
+		c.ResHeader.Set("router-not-found", "1")
+		return textResponse{http.StatusNotFound, ""}
+	})
+
+	mux := router.CreateServeMux()
+
+	assertHeader := func(res *http.Response, key string, exist bool) {
+		if exist {
+			if got, want := res.Header.Get(key), "1"; got != want {
+				t.Errorf("header %s error. got:\"%v\" want:\"%v\"", key, got, want)
+			}
+		} else {
+			if got, want := res.Header.Get(key), ""; got != want {
+				t.Errorf("header %s error. got:\"%v\" want:\"%v\"", key, got, want)
+			}
+		}
+	}
+
+	for url, result := range testcases {
+		name := fmt.Sprintf("Test nested router: %s", url)
+		t.Run(name, func(t *testing.T) {
+			req := httptest.NewRequest(http.MethodGet, url, nil)
+			w := httptest.NewRecorder()
+
+			mux.ServeHTTP(w, req)
+
+			res := w.Result()
+			defer res.Body.Close()
+
+			if got, want := res.StatusCode, result.status; got != want {
+				t.Errorf("status error. got:\"%v\" want:\"%v\"", got, want)
+			}
+			assertHeader(res, "test1", result.test1)
+			assertHeader(res, "test2", result.test2)
+			assertHeader(res, "test3", result.test3)
+			assertHeader(res, "test4", result.test4)
+			assertHeader(res, "test5", result.test5)
+			assertHeader(res, "test1-not-found", result.test1notfound)
+			assertHeader(res, "router-not-found", result.routernotfound)
+		})
+	}
+}
