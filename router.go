@@ -20,12 +20,18 @@ func New() *Router {
 
 func (r *Router) Use(handlerFuncs ...HandlerFunc) {
 	for _, f := range handlerFuncs {
+		if f == nil {
+			continue
+		}
 		r.handlerRepository.addHandler(f, r, r.pattern, true)
 	}
 }
 
 func (r *Router) Handle(pattern string, handlerFuncs ...HandlerFunc) {
 	for _, f := range handlerFuncs {
+		if f == nil {
+			continue
+		}
 		parsedPattern, err := parsePattern(pattern)
 		if err != nil {
 			panic(err)
