@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go: [ '1.22', '1.23' ]
+        go: [ '1.21', '1.22', '1.23' ]
     name: Go ${{ matrix.go }} Test
     steps:
       - name: Checkout
@@ -23,6 +23,9 @@ jobs:
 
       - name: Install Dependencies
         run: go mod download
+
+      - name: Run build
+        run: go build . && go build ./gohf_responses
 
       - name: Run Tests
         run: go test ./...
