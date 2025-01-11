@@ -15,15 +15,15 @@ type textResponse struct {
 	text   string
 }
 
-func (response textResponse) Send(w http.ResponseWriter, req *Request) {
+func (res textResponse) Send(w http.ResponseWriter, req *Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
 	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(response.status)
+	w.WriteHeader(res.status)
 	//nolint:errcheck
-	w.Write([]byte(response.text))
+	w.Write([]byte(res.text))
 }
 
 func TestHelloGoHF(t *testing.T) {
