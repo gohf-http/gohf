@@ -6,7 +6,7 @@ import (
 )
 
 type Router struct {
-	prefix            string
+	pattern           pattern
 	handlerRepository *handlerRepository
 	parentRouter      *Router
 	subRouters        []*Router
@@ -20,21 +20,42 @@ func New() *Router {
 
 func (r *Router) Use(handlerFuncs ...HandlerFunc) {
 	for _, f := range handlerFuncs {
-		r.handlerRepository.addHandler(f, r, "", true)
+		r.handlerRepository.addHandler(f, r, r.pattern, true)
 	}
 }
 
 func (r *Router) Handle(pattern string, handlerFuncs ...HandlerFunc) {
 	for _, f := range handlerFuncs {
-		r.handlerRepository.addHandler(f, r, pattern, false)
+		parsedPattern, err := parsePattern(pattern)
+		if err != nil {
+			panic(err)
+		}
+
+		pat, err := mergePattern(r.pattern, parsedPattern)
+		if err != nil {
+			panic(err)
+		}
+
+		r.handlerRepository.addHandler(f, r, pat, false)
 	}
 }
 
-func (r *Router) SubRouter(prefix string) *Router {
-	prefix = strings.TrimSuffix(prefix, "/")
+func (r *Router) SubRouter(pattern string) *Router {
+	parsedPattern, err := parsePattern(pattern)
+	if err != nil {
+		panic(err)
+	}
+
+	pat, err := mergePattern(r.pattern, parsedPattern)
+	if err != nil {
+		panic(err)
+	}
+	if len(pat.path) > 0 && !strings.HasSuffix(pat.path, "/") {
+		pat.path += "/"
+	}
 
 	subRouter := &Router{
-		prefix:            prefix,
+		pattern:           pat,
 		handlerRepository: r.handlerRepository,
 		parentRouter:      r,
 	}
@@ -49,44 +70,13 @@ func (r *Router) CreateServeMux() *http.ServeMux {
 
 	httpHandlerMap := r.getHttpHandlerMap()
 
-	for pattern, httpHandler := range httpHandlerMap {
+	for patternString, httpHandler := range httpHandlerMap.getMap() {
 		if httpHandler.len() > 0 {
-			mux.Handle(pattern, httpHandler)
+			mux.Handle(patternString, httpHandler)
 		}
-	}
-
-	for _, router := range r.subRouters {
-		prefix := router.prefix
-		mux.Handle(prefix+"/", http.StripPrefix(prefix, router.CreateServeMux()))
 	}
 
 	return mux
-}
-
-func (r *Router) getHttpHandlerMap() map[string]*httpHandler {
-	httpHandlerMap := make(map[string]*httpHandler)
-	httpHandlerMap["/"] = newHttpHandler()
-
-	for _, h := range r.handlerRepository.getHandlers() {
-		if !h.all && h.owner == r {
-			if _, ok := httpHandlerMap[h.pattern]; !ok {
-				httpHandlerMap[h.pattern] = newHttpHandler()
-			}
-		}
-	}
-
-	for _, handler := range r.handlerRepository.getHandlers() {
-		if handler.all && (handler.owner == r || r.hasAncestor(handler.owner)) {
-			for pattern := range httpHandlerMap {
-				httpHandlerMap[pattern].addHandlerFunc(handler.f)
-			}
-		} else if !handler.all && handler.owner == r {
-			pattern := handler.pattern
-			httpHandlerMap[pattern].addHandlerFunc(handler.f)
-		}
-	}
-
-	return httpHandlerMap
 }
 
 func (r *Router) hasAncestor(router *Router) bool {
@@ -95,4 +85,36 @@ func (r *Router) hasAncestor(router *Router) bool {
 		return true
 	}
 	return parentRouter != nil && parentRouter.hasAncestor(router)
+}
+
+func (r *Router) getHttpHandlerMap() *httpHandlerMap {
+	httpHandlerMap := newHttpHandlerMap()
+	r.setupHttpHandlerMap(httpHandlerMap)
+	return httpHandlerMap
+}
+
+func (r *Router) setupHttpHandlerMap(targetHttpHandlerMap *httpHandlerMap) {
+	localHandlerMap := newHttpHandlerMap()
+	localHandlerMap.addPatternString(r.pattern.String())
+
+	for _, h := range r.handlerRepository.getHandlers() {
+		if !h.all && h.owner == r {
+			localHandlerMap.addPatternString(h.pattern.String())
+		}
+	}
+
+	for _, handler := range r.handlerRepository.getHandlers() {
+		if handler.all && (handler.owner == r || r.hasAncestor(handler.owner)) {
+			localHandlerMap.addHandlerFuncToAll(handler.f)
+		} else if !handler.all && handler.owner == r {
+			patternString := handler.pattern.String()
+			localHandlerMap.addHandlerFuncToPatternString(patternString, handler.f)
+		}
+	}
+
+	writeHandlerMap(targetHttpHandlerMap, localHandlerMap)
+
+	for _, subRouter := range r.subRouters {
+		subRouter.setupHttpHandlerMap(targetHttpHandlerMap)
+	}
 }

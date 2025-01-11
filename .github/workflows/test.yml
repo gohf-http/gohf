@@ -1,24 +1,31 @@
-name: Test
+name: test
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
     branches: [main]
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: [ '1.22', '1.23' ]
+    name: Go ${{ matrix.go }} Test
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
+      - name: Setup go
         uses: actions/setup-go@v5
         with:
-          go-version: "^1"
+          go-version: ${{ matrix.go }}
 
       - name: Install Dependencies
         run: go mod download
+
+      - name: Run build
+        run: go build . && go build ./gohf_responses
 
       - name: Run Tests
         run: go test ./...

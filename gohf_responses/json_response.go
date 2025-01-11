@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/gohf-http/gohf"
+	"github.com/gohf-http/gohf/v2"
 )
 
 type JsonResponse[T interface{}] struct {
