@@ -14,10 +14,10 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf.svg)](https://pkg.
 
 # ❓ WHY GoHF
 
-- [Easier error handling](#feature-easier-error-handing)
-- [Support middleware](#feature-middleware)
-- [Support sub-routers (route grouping)](#feature-sub-router)
-- [Customizable response](#feature-customizable-response)
+- [Easier Error Handling](#feature-easier-error-handing)
+- [Middleware](#feature-middleware)
+- [Sub-Router (route grouping)](#feature-sub-router)
+- [Customizable Response](#feature-customizable-response)
 - Lightweight
 - Based on [net/http](https://pkg.go.dev/net/http)
 
@@ -95,7 +95,9 @@ type Response interface {
 }
 ```
 
-Here are [some examples](https://github.com/gohf-http/gohf/tree/main/gohf_responses).
+Refer to [gohf_responses](https://github.com/gohf-http/gohf/tree/main/gohf_responses) for examples.
+
+This is one of my favorite features, as it promotes a centralized response handler and simplifies adding additional functionality, such as logging.
 
 # Hello GoHF Example
 
