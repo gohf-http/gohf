@@ -8,7 +8,7 @@ func newHandlerRepository() *handlerRepository {
 	return &handlerRepository{}
 }
 
-func (hr *handlerRepository) addHandler(f HandlerFunc, owner *Router, pattern string, all bool) {
+func (hr *handlerRepository) addHandler(f HandlerFunc, owner *Router, pattern pattern, all bool) {
 	hr.handlers = append(hr.handlers, newHandler(f, owner, pattern, all))
 }
 
@@ -19,11 +19,11 @@ func (hr *handlerRepository) getHandlers() []*handler {
 type handler struct {
 	f       HandlerFunc
 	owner   *Router
-	pattern string
+	pattern pattern
 	all     bool
 }
 
-func newHandler(f HandlerFunc, owner *Router, pattern string, all bool) *handler {
+func newHandler(f HandlerFunc, owner *Router, pattern pattern, all bool) *handler {
 	return &handler{
 		f:       f,
 		owner:   owner,

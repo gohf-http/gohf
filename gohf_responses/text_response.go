@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/gohf-http/gohf"
+	"github.com/gohf-http/gohf/v2"
 )
 
 type TextResponse struct {
