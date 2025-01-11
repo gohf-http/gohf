@@ -3,7 +3,6 @@ package gohf
 import (
 	"errors"
 	"fmt"
-	"net/url"
 	"strings"
 )
 
@@ -74,9 +73,12 @@ func mergePattern(p1, p2 pattern) (pattern, error) {
 		host = p2.host
 	}
 
-	path, err := url.JoinPath(p1.path, p2.path)
-	if err != nil {
-		return pat, fmt.Errorf("url.JoinPath failed: %w", err)
+	if p1.path == "" {
+		path = p2.path
+	} else if p2.path == "" {
+		path = p1.path
+	} else {
+		path = strings.TrimRight(p1.path, "/") + "/" + strings.TrimLeft(p2.path, "/")
 	}
 
 	pat.method = method
