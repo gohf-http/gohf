@@ -1,6 +1,6 @@
 package gohf_responses
 
-import "github.com/gohf-http/gohf/v2"
+import "github.com/gohf-http/gohf/v3"
 
 type DummyResponse struct {
 }

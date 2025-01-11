@@ -10,18 +10,21 @@ import (
 )
 
 type Request struct {
-	req       *http.Request
-	ctx       context.Context
-	body      RequestBody
-	timestamp time.Time
+	req         *http.Request
+	body        RequestBody
+	timestamp   time.Time
+	ctx         context.Context
+	rootContext context.Context
 }
 
 func newRequest(req *http.Request) *Request {
+	ctx := req.Context()
 	return &Request{
-		req:       req,
-		ctx:       req.Context(),
-		body:      newRequestBody(req.Body),
-		timestamp: time.Now(),
+		req:         req,
+		body:        newRequestBody(req.Body),
+		timestamp:   time.Now(),
+		ctx:         ctx,
+		rootContext: ctx,
 	}
 }
 
@@ -46,7 +49,7 @@ func (req *Request) RequestURI() string {
 }
 
 func (req *Request) RootContext() context.Context {
-	return req.req.Context()
+	return req.rootContext
 }
 
 func (req *Request) Context() context.Context {
@@ -91,6 +94,10 @@ func (req *Request) Cookie(name string) (*http.Cookie, error) {
 
 func (req *Request) AddCookie(c *http.Cookie) {
 	req.req.AddCookie(c)
+}
+
+func (req *Request) GetHttpRequest() *http.Request {
+	return req.req
 }
 
 type RequestBody struct {

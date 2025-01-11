@@ -1,9 +1,7 @@
 package gohf
 
 import (
-	"io"
 	"net/http"
-	"time"
 )
 
 type ResponseWriter struct {
@@ -28,10 +26,6 @@ func (res ResponseWriter) Write(p []byte) (n int, err error) {
 	return res.w.Write(p)
 }
 
-func (res ResponseWriter) ServeFile(req *Request, filepath string) {
-	http.ServeFile(res.w, req.req, filepath)
-}
-
-func (res ResponseWriter) ServeContent(req *Request, name string, modtime time.Time, content io.ReadSeeker) {
-	http.ServeContent(res.w, req.req, name, modtime, content)
+func (res ResponseWriter) GetHttpResponseWriter() http.ResponseWriter {
+	return res.w
 }

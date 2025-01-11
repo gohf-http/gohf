@@ -5,7 +5,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/gohf-http/gohf/v2"
+	"github.com/gohf-http/gohf/v3"
 )
 
 type IoResponse struct {
