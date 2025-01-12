@@ -3,7 +3,7 @@ package gohf_responses
 import (
 	"net/http"
 
-	"github.com/gohf-http/gohf/v4"
+	"github.com/gohf-http/gohf/v5"
 )
 
 type DummyResponse struct {

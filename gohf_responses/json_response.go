@@ -6,22 +6,22 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v4"
+	"github.com/gohf-http/gohf/v5"
 )
 
-type JsonResponse[T interface{}] struct {
+type JsonResponse struct {
 	Status int
-	Data   T
+	Data   interface{}
 }
 
-func NewJsonResponse[T interface{}](statusCode int, data T) JsonResponse[T] {
-	return JsonResponse[T]{
+func NewJsonResponse(statusCode int, data interface{}) JsonResponse {
+	return JsonResponse{
 		Status: statusCode,
 		Data:   data,
 	}
 }
 
-func (res JsonResponse[T]) Send(w http.ResponseWriter, req *gohf.Request) {
+func (res JsonResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}

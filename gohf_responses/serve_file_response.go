@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v4"
+	"github.com/gohf-http/gohf/v5"
 )
 
 type ServeFileResponse struct {

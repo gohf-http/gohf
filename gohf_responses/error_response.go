@@ -7,28 +7,28 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v4"
+	"github.com/gohf-http/gohf/v5"
 )
 
-type ErrorResponse[T interface{}] struct {
+type ErrorResponse struct {
 	Status  int    `json:"status"`
 	Message string `json:"message"`
-	Err     T      `json:"err"`
+	Err     error  `json:"err"`
 }
 
-func NewErrorResponse[TError error](statusCode int, err TError) ErrorResponse[TError] {
-	return ErrorResponse[TError]{
+func NewErrorResponse(statusCode int, err error) ErrorResponse {
+	return ErrorResponse{
 		Status:  statusCode,
 		Message: err.Error(),
 		Err:     err,
 	}
 }
 
-func (res ErrorResponse[T]) Error() string {
+func (res ErrorResponse) Error() string {
 	return fmt.Sprintf("http error %d: %s", res.Status, res.Message)
 }
 
-func (res ErrorResponse[T]) Send(w http.ResponseWriter, req *gohf.Request) {
+func (res ErrorResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}

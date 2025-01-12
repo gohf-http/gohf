@@ -1,3 +1,3 @@
-module github.com/gohf-http/gohf/v4
+module github.com/gohf-http/gohf/v5
 
 go 1.22

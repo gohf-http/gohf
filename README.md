@@ -4,7 +4,7 @@
 
 [![Test](https://github.com/gohf-http/gohf/actions/workflows/test.yml/badge.svg)](https://github.com/gohf-http/gohf/actions/workflows/test.yml)
 [![Go
-Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v4.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v4)
+Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v5.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v5)
 [![Release](https://img.shields.io/github/release/gohf-http/gohf.svg?style=flat-square)](https://github.com/gohf-http/gohf/releases)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/gohf-http/gohf#readme)
 [![Maintenance](https://img.shields.io/badge/Maintained-yes-green.svg)](https://github.com/gohf-http/gohf/graphs/commit-activity)
@@ -26,13 +26,13 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v4.svg)](https://p
 Please make sure Go version >= `1.22`
 
 ```sh
-go get github.com/gohf-http/gohf/v4
+go get github.com/gohf-http/gohf/v5
 ```
 
 ```go
 import (
-  "github.com/gohf-http/gohf/v4"
-  "github.com/gohf-http/gohf/v4/gohf_responses"
+  "github.com/gohf-http/gohf/v5"
+  "github.com/gohf-http/gohf/v5/gohf_responses"
 )
 ```
 
@@ -112,8 +112,8 @@ import (
   "log"
   "net/http"
 
-  "github.com/gohf-http/gohf/v4"
-  "github.com/gohf-http/gohf/v4/gohf_responses"
+  "github.com/gohf-http/gohf/v5"
+  "github.com/gohf-http/gohf/v5/gohf_responses"
 )
 
 func main() {
