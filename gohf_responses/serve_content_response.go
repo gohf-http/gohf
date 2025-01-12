@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gohf-http/gohf/v4"
+	"github.com/gohf-http/gohf/v5"
 )
 
 type ServeContentResponse struct {
