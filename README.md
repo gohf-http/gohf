@@ -57,6 +57,8 @@ router.Handle("GET /greeting", func(c *gohf.Context) gohf.Response {
 })
 ```
 
+Return `gohf.Response` to handle the error. (`gohf_responses.NewErrorResponse` in this example)
+
 ### Feature: Middleware
 
 ```go
@@ -73,6 +75,8 @@ router.Use(func(c *gohf.Context) gohf.Response {
 })
 ```
 
+`Router.Use` create a middleware.
+
 This is how middleware works in GoHF.
 
 ![middleware](https://raw.githubusercontent.com/gohf-http/assets/refs/heads/main/middleware.png)
@@ -86,6 +90,10 @@ authRouter.Handle("GET /users/{id}", func(c *gohf.Context) gohf.Response {
   // ...
 })
 ```
+
+`Router.SubRouter` create a sub-router.
+
+Middlewares will be recursively applied to all endpoints of the router, including those of its nested sub-routers.
 
 ### Feature: Customizable Response
 
