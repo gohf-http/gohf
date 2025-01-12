@@ -56,9 +56,6 @@ func (r *Router) SubRouter(pattern string) *Router {
 	if err != nil {
 		panic(err)
 	}
-	if len(pat.path) > 0 && !strings.HasSuffix(pat.path, "/") {
-		pat.path += "/"
-	}
 
 	subRouter := &Router{
 		pattern:           pat,
@@ -101,7 +98,11 @@ func (r *Router) getHttpHandlerMap() *httpHandlerMap {
 
 func (r *Router) setupHttpHandlerMap(targetHttpHandlerMap *httpHandlerMap) {
 	localHandlerMap := newHttpHandlerMap()
-	localHandlerMap.addPatternString(r.pattern.String())
+	routerPatternString := r.pattern.String()
+	if !strings.HasSuffix(routerPatternString, "/") {
+		routerPatternString += "/"
+	}
+	localHandlerMap.addPatternString(routerPatternString)
 
 	for _, h := range r.handlerRepository.getHandlers() {
 		if !h.all && h.owner == r {
