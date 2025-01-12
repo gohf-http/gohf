@@ -5,8 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type ErrorResponse[T interface{}] struct {
@@ -23,17 +24,17 @@ func NewErrorResponse[TError error](statusCode int, err TError) ErrorResponse[TE
 	}
 }
 
-func (response ErrorResponse[T]) Error() string {
-	return fmt.Sprintf("default http error [%d]: %s", response.Status, response.Message)
+func (res ErrorResponse[T]) Error() string {
+	return fmt.Sprintf("http error %d: %s", res.Status, res.Message)
 }
 
-func (response ErrorResponse[T]) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res ErrorResponse[T]) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetHeader("Content-Type", "application/json")
-	res.SetStatus(response.Status)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(res.Status)
 	//nolint:errcheck
-	json.NewEncoder(res).Encode(response)
+	json.NewEncoder(w).Encode(res)
 }

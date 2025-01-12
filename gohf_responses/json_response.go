@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type JsonResponse[T interface{}] struct {
@@ -20,13 +21,13 @@ func NewJsonResponse[T interface{}](statusCode int, data T) JsonResponse[T] {
 	}
 }
 
-func (response JsonResponse[T]) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res JsonResponse[T]) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
-	res.SetHeader("Content-Type", "application/json")
-	res.SetStatus(response.Status)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(res.Status)
 	//nolint:errcheck
-	json.NewEncoder(res).Encode(response.Data)
+	json.NewEncoder(w).Encode(res.Data)
 }

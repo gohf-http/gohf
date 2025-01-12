@@ -5,7 +5,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v3"
+	"github.com/gohf-http/gohf/v4"
 )
 
 type RedirectResponse struct {
@@ -20,15 +20,15 @@ func NewRedirectResponse(statusCode int, url string) RedirectResponse {
 	}
 }
 
-func (response RedirectResponse) Send(res gohf.ResponseWriter, req *gohf.Request) {
+func (res RedirectResponse) Send(w http.ResponseWriter, req *gohf.Request) {
 	if errors.Is(req.RootContext().Err(), context.Canceled) {
 		return
 	}
 
 	http.Redirect(
-		res.GetHttpResponseWriter(),
+		w,
 		req.GetHttpRequest(),
-		response.Url,
-		response.Status,
+		res.Url,
+		res.Status,
 	)
 }

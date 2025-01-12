@@ -64,6 +64,10 @@ func (req *Request) GetHeader(key string) string {
 	return req.req.Header.Get(key)
 }
 
+func (req *Request) SetHeader(key string, value string) {
+	req.req.Header.Set(key, value)
+}
+
 func (req *Request) PathValue(name string) string {
 	return req.req.PathValue(name)
 }
