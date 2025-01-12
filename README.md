@@ -23,6 +23,8 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v4.svg)](https://p
 
 # 📍 Getting started
 
+Please make sure Go version >= `1.22`
+
 ```sh
 go get github.com/gohf-http/gohf/v4
 ```
@@ -80,7 +82,7 @@ This is how middleware works in GoHF.
 ```go
 authRouter := router.SubRouter("/auth")
 authRouter.Use(AuthMiddleware)
-authRouter.Handle("GET /users", func(c *gohf.Context) gohf.Response {
+authRouter.Handle("GET /users/{id}", func(c *gohf.Context) gohf.Response {
   // ...
 })
 ```
