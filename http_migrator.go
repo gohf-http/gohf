@@ -4,14 +4,14 @@ import "net/http"
 
 func FromHttpHandleFunc(httpHandleFunc func(http.ResponseWriter, *http.Request)) HandlerFunc {
 	return func(c *Context) Response {
-		httpHandleFunc(c.w, c.Req.GetHttpRequest())
+		httpHandleFunc(GetResponseWriter(c), c.Req.GetHttpRequest())
 		return dummyResponse{}
 	}
 }
 
 func FromHttpHandler(httpHandler http.Handler) HandlerFunc {
 	return func(c *Context) Response {
-		httpHandler.ServeHTTP(c.w, c.Req.GetHttpRequest())
+		httpHandler.ServeHTTP(GetResponseWriter(c), c.Req.GetHttpRequest())
 		return dummyResponse{}
 	}
 }
