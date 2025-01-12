@@ -305,39 +305,39 @@ func TestNestedRouter(t *testing.T) {
 
 	test1Router := router.SubRouter("/test1")
 	test1Router.Use(func(c *Context) Response {
-		c.ResHeader.Set("test1", "1")
+		c.ResHeader().Set("test1", "1")
 		return c.Next()
 	})
 
 	test2Router := test1Router.SubRouter("/test2")
 	test2Router.Use(func(c *Context) Response {
-		c.ResHeader.Set("test2", "1")
+		c.ResHeader().Set("test2", "1")
 		return c.Next()
 	})
 
 	test2Router.Handle("/test3", func(c *Context) Response {
-		c.ResHeader.Set("test3", "1")
+		c.ResHeader().Set("test3", "1")
 		return textResponse{http.StatusOK, ""}
 	})
 
 	test4Router := test1Router.SubRouter("/test4/{id}")
 	test4Router.Use(func(c *Context) Response {
-		c.ResHeader.Set("test4", "1")
+		c.ResHeader().Set("test4", "1")
 		return c.Next()
 	})
 
 	test4Router.Handle("/test5", func(c *Context) Response {
-		c.ResHeader.Set("test5", "1")
+		c.ResHeader().Set("test5", "1")
 		return textResponse{http.StatusOK, ""}
 	})
 
 	test1Router.Use(func(c *Context) Response {
-		c.ResHeader.Set("test1-not-found", "1")
+		c.ResHeader().Set("test1-not-found", "1")
 		return textResponse{http.StatusNotFound, ""}
 	})
 
 	router.Use(func(c *Context) Response {
-		c.ResHeader.Set("router-not-found", "1")
+		c.ResHeader().Set("router-not-found", "1")
 		return textResponse{http.StatusNotFound, ""}
 	})
 
