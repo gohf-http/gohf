@@ -100,6 +100,10 @@ func (req *Request) AddCookie(c *http.Cookie) {
 	req.req.AddCookie(c)
 }
 
+func (req *Request) SetHttpRequest(r *http.Request) {
+	req.req = r
+}
+
 func (req *Request) GetHttpRequest() *http.Request {
 	return req.req
 }
