@@ -1,4 +1,4 @@
-package gohf_responses
+package response
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type IoResponse struct {
@@ -14,7 +14,7 @@ type IoResponse struct {
 	Reader io.Reader
 }
 
-func NewIoResponse(statusCode int, reader io.Reader) IoResponse {
+func IO(statusCode int, reader io.Reader) IoResponse {
 	return IoResponse{
 		Status: statusCode,
 		Reader: reader,

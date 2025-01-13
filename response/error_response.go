@@ -1,4 +1,4 @@
-package gohf_responses
+package response
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type ErrorResponse struct {
@@ -16,7 +16,7 @@ type ErrorResponse struct {
 	Err     error  `json:"err"`
 }
 
-func NewErrorResponse(statusCode int, err error) ErrorResponse {
+func Error(statusCode int, err error) ErrorResponse {
 	return ErrorResponse{
 		Status:  statusCode,
 		Message: err.Error(),

@@ -1,4 +1,4 @@
-package gohf_responses
+package response
 
 import (
 	"encoding/json"
@@ -6,14 +6,14 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 func TestJsonResponse(t *testing.T) {
 	createServerMux := func(data interface{}) *http.ServeMux {
 		router := gohf.New()
 		router.Use(func(c *gohf.Context) gohf.Response {
-			return NewJsonResponse(http.StatusOK, data)
+			return JSON(http.StatusOK, data)
 		})
 		return router.CreateServeMux()
 	}

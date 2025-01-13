@@ -1,15 +1,15 @@
-package gohf_responses
+package response
 
 import (
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type DummyResponse struct {
 }
 
-func NewDummyResponse() DummyResponse {
+func Dummy() DummyResponse {
 	return DummyResponse{}
 }
 
