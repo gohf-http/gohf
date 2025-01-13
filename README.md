@@ -86,9 +86,14 @@ This is how middleware works in GoHF.
 ```go
 authRouter := router.SubRouter("/auth")
 authRouter.Use(AuthMiddleware)
-authRouter.GET("/users/{id}", func(c *gohf.Context) gohf.Response {
-  // ...
-})
+
+userRouter := authRouter.SubRouter("/users")
+// GET /auth/users
+userRouter.GET("/", ...)
+// POST /auth/users
+userRouter.POST("/", ...)
+// GET /auth/users/{id}
+userRouter.GET("/{id}", ...)
 ```
 
 `Router.SubRouter` create a sub-router.
@@ -101,7 +106,7 @@ You can define a customizable response by implementing `gohf.Response` interface
 
 ```go
 type Response interface {
-	Send(http.ResponseWriter, *gohf.Request)
+  Send(http.ResponseWriter, *gohf.Request)
 }
 ```
 
@@ -116,7 +121,6 @@ package main
 
 import (
   "errors"
-  "fmt"
   "log"
   "net/http"
 
@@ -136,8 +140,9 @@ func main() {
       )
     }
 
-    greeting := fmt.Sprintf("Hello, %s!", name)
-    return response.Text(http.StatusOK, greeting)
+    return response.JSON(http.StatusOK, map[string]string{
+      "Hello": name,
+    })
   })
 
   router.Use(func(c *gohf.Context) gohf.Response {
