@@ -85,6 +85,7 @@ func (r *Router) SubRouter(pattern string) *Router {
 	if err != nil {
 		panic(err)
 	}
+	pat.path = strings.TrimSuffix(pat.path, "/")
 
 	subRouter := &Router{
 		pattern:           pat,

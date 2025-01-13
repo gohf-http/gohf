@@ -60,7 +60,7 @@ func TestHelloGoHF(t *testing.T) {
 
 	router := New()
 
-	router.Handle("GET /greeting", func(c *Context) Response {
+	router.GET("/greeting", func(c *Context) Response {
 		name := c.Req.GetQuery("name")
 		if name == "" {
 			return textResponse{
@@ -315,7 +315,7 @@ func TestNestedRouter(t *testing.T) {
 		return c.Next()
 	})
 
-	test2Router.Handle("/test3", func(c *Context) Response {
+	test2Router.GET("/test3", func(c *Context) Response {
 		c.ResHeader().Set("test3", "1")
 		return textResponse{http.StatusOK, ""}
 	})
@@ -326,7 +326,7 @@ func TestNestedRouter(t *testing.T) {
 		return c.Next()
 	})
 
-	test4Router.Handle("/test5", func(c *Context) Response {
+	test4Router.GET("/test5", func(c *Context) Response {
 		c.ResHeader().Set("test5", "1")
 		return textResponse{http.StatusOK, ""}
 	})
@@ -562,7 +562,7 @@ func TestSubRouter(t *testing.T) {
 		return c.Next()
 	})
 
-	testRouter.Handle("GET /", func(c *Context) Response {
+	testRouter.GET("/", func(c *Context) Response {
 		c.ResHeader().Set("getall", "1")
 		return textResponse{
 			http.StatusOK,
@@ -570,7 +570,7 @@ func TestSubRouter(t *testing.T) {
 		}
 	})
 
-	testRouter.Handle("GET /{id}", func(c *Context) Response {
+	testRouter.GET("/{id}", func(c *Context) Response {
 		c.ResHeader().Set("getid", "1")
 		return textResponse{
 			http.StatusOK,
@@ -578,7 +578,7 @@ func TestSubRouter(t *testing.T) {
 		}
 	})
 
-	testRouter.Handle("POST /", func(c *Context) Response {
+	testRouter.POST("/", func(c *Context) Response {
 		c.ResHeader().Set("post", "1")
 		return textResponse{
 			http.StatusOK,
@@ -586,7 +586,7 @@ func TestSubRouter(t *testing.T) {
 		}
 	})
 
-	testRouter.Handle("POST /{id}", func(c *Context) Response {
+	testRouter.POST("/{id}", func(c *Context) Response {
 		c.ResHeader().Set("postid", "1")
 		return textResponse{
 			http.StatusOK,

@@ -43,7 +43,7 @@ import (
 ### Feature: Easier Error Handing
 
 ```go
-router.Handle("GET /greeting", func(c *gohf.Context) gohf.Response {
+router.GET("/greeting", func(c *gohf.Context) gohf.Response {
   name := c.Req.GetQuery("name")
   if name == "" {
     return gohf_responses.NewErrorResponse(
@@ -86,7 +86,7 @@ This is how middleware works in GoHF.
 ```go
 authRouter := router.SubRouter("/auth")
 authRouter.Use(AuthMiddleware)
-authRouter.Handle("GET /users/{id}", func(c *gohf.Context) gohf.Response {
+authRouter.GET("/users/{id}", func(c *gohf.Context) gohf.Response {
   // ...
 })
 ```
@@ -127,7 +127,7 @@ import (
 func main() {
   router := gohf.New()
 
-  router.Handle("GET /greeting", func(c *gohf.Context) gohf.Response {
+  router.GET("/greeting", func(c *gohf.Context) gohf.Response {
     name := c.Req.GetQuery("name")
     if name == "" {
       return gohf_responses.NewErrorResponse(
