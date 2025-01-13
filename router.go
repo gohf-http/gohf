@@ -1,6 +1,7 @@
 package gohf
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -44,6 +45,34 @@ func (r *Router) Handle(pattern string, handlerFuncs ...HandlerFunc) {
 
 		r.handlerRepository.addHandler(f, r, pat, false)
 	}
+}
+
+func (r *Router) GET(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodGet, pattern), handlerFuncs...)
+}
+
+func (r *Router) POST(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodPost, pattern), handlerFuncs...)
+}
+
+func (r *Router) PUT(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodPut, pattern), handlerFuncs...)
+}
+
+func (r *Router) PATCH(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodPatch, pattern), handlerFuncs...)
+}
+
+func (r *Router) DELETE(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodDelete, pattern), handlerFuncs...)
+}
+
+func (r *Router) OPTIONS(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodOptions, pattern), handlerFuncs...)
+}
+
+func (r *Router) HEAD(pattern string, handlerFuncs ...HandlerFunc) {
+	r.Handle(fmt.Sprintf("%s %s", http.MethodHead, pattern), handlerFuncs...)
 }
 
 func (r *Router) SubRouter(pattern string) *Router {
