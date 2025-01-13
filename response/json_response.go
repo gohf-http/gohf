@@ -1,4 +1,4 @@
-package gohf_responses
+package response
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type JsonResponse struct {
@@ -14,7 +14,7 @@ type JsonResponse struct {
 	Data   interface{}
 }
 
-func NewJsonResponse(statusCode int, data interface{}) JsonResponse {
+func JSON(statusCode int, data interface{}) JsonResponse {
 	return JsonResponse{
 		Status: statusCode,
 		Data:   data,

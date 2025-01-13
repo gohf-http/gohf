@@ -1,11 +1,11 @@
-package gohf_responses
+package response
 
 import (
 	"context"
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type RedirectResponse struct {
@@ -13,7 +13,7 @@ type RedirectResponse struct {
 	Url    string
 }
 
-func NewRedirectResponse(statusCode int, url string) RedirectResponse {
+func Redirect(statusCode int, url string) RedirectResponse {
 	return RedirectResponse{
 		Status: statusCode,
 		Url:    url,

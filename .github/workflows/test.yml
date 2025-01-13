@@ -25,7 +25,7 @@ jobs:
         run: go mod download
 
       - name: Run build
-        run: go build . && go build ./gohf_responses
+        run: go build . && go build ./response
 
       - name: Run Tests
         run: go test ./...

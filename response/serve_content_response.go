@@ -1,4 +1,4 @@
-package gohf_responses
+package response
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type ServeContentResponse struct {
@@ -16,7 +16,7 @@ type ServeContentResponse struct {
 	Content io.ReadSeeker
 }
 
-func NewServeContentResponse(name string, modtime time.Time, content io.ReadSeeker) ServeContentResponse {
+func ServeContent(name string, modtime time.Time, content io.ReadSeeker) ServeContentResponse {
 	return ServeContentResponse{
 		Name:    name,
 		Modtime: modtime,

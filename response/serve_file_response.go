@@ -1,18 +1,18 @@
-package gohf_responses
+package response
 
 import (
 	"context"
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type ServeFileResponse struct {
 	Filepath string
 }
 
-func NewServeFileResponse(filepath string) ServeFileResponse {
+func ServeFile(filepath string) ServeFileResponse {
 	return ServeFileResponse{
 		Filepath: filepath,
 	}

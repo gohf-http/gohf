@@ -4,7 +4,7 @@
 
 [![Test](https://github.com/gohf-http/gohf/actions/workflows/test.yml/badge.svg)](https://github.com/gohf-http/gohf/actions/workflows/test.yml)
 [![Go
-Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v5.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v5)
+Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v6.svg)](https://pkg.go.dev/github.com/gohf-http/gohf/v6)
 [![Release](https://img.shields.io/github/release/gohf-http/gohf.svg?style=flat-square)](https://github.com/gohf-http/gohf/releases)
 [![Documentation](https://img.shields.io/badge/documentation-yes-brightgreen.svg)](https://github.com/gohf-http/gohf#readme)
 [![Maintenance](https://img.shields.io/badge/Maintained-yes-green.svg)](https://github.com/gohf-http/gohf/graphs/commit-activity)
@@ -26,13 +26,13 @@ Reference](https://pkg.go.dev/badge/github.com/gohf-http/gohf/v5.svg)](https://p
 Please make sure Go version >= `1.22`
 
 ```sh
-go get github.com/gohf-http/gohf/v5
+go get github.com/gohf-http/gohf/v6
 ```
 
 ```go
 import (
-  "github.com/gohf-http/gohf/v5"
-  "github.com/gohf-http/gohf/v5/gohf_responses"
+  "github.com/gohf-http/gohf/v6"
+  "github.com/gohf-http/gohf/v6/response"
 )
 ```
 
@@ -46,18 +46,18 @@ import (
 router.GET("/greeting", func(c *gohf.Context) gohf.Response {
   name := c.Req.GetQuery("name")
   if name == "" {
-    return gohf_responses.NewErrorResponse(
+    return response.Error(
       http.StatusBadRequest,
       errors.New("Name is required"),
     )
   }
 
   greeting := fmt.Sprintf("Hello, %s!", name)
-  return gohf_responses.NewTextResponse(http.StatusOK, greeting)
+  return response.Text(http.StatusOK, greeting)
 })
 ```
 
-Return `gohf.Response` to handle the error. (`gohf_responses.NewErrorResponse` in this example)
+Return `gohf.Response` to handle the error. (`response.Error` in this example)
 
 ### Feature: Middleware
 
@@ -65,7 +65,7 @@ Return `gohf.Response` to handle the error. (`gohf_responses.NewErrorResponse` i
 router.Use(func(c *gohf.Context) gohf.Response {
   token := c.Req.GetHeader("Authorization")
   if !isValidToken(token) {
-    return gohf_responses.NewErrorResponse(
+    return response.Error(
       http.StatusUnauthorized,
       errors.New("Invalid token"),
     )
@@ -105,7 +105,7 @@ type Response interface {
 }
 ```
 
-Refer to [gohf_responses](https://github.com/gohf-http/gohf/tree/main/gohf_responses) for examples.
+Refer to [response package](https://github.com/gohf-http/gohf/tree/main/response) for examples.
 
 This is one of my favorite features, as it promotes a centralized response handler and simplifies adding additional functionality, such as logging.
 
@@ -120,8 +120,8 @@ import (
   "log"
   "net/http"
 
-  "github.com/gohf-http/gohf/v5"
-  "github.com/gohf-http/gohf/v5/gohf_responses"
+  "github.com/gohf-http/gohf/v6"
+  "github.com/gohf-http/gohf/v6/response"
 )
 
 func main() {
@@ -130,18 +130,18 @@ func main() {
   router.GET("/greeting", func(c *gohf.Context) gohf.Response {
     name := c.Req.GetQuery("name")
     if name == "" {
-      return gohf_responses.NewErrorResponse(
+      return response.Error(
         http.StatusBadRequest,
         errors.New("Name is required"),
       )
     }
 
     greeting := fmt.Sprintf("Hello, %s!", name)
-    return gohf_responses.NewTextResponse(http.StatusOK, greeting)
+    return response.Text(http.StatusOK, greeting)
   })
 
   router.Use(func(c *gohf.Context) gohf.Response {
-    return gohf_responses.NewErrorResponse(
+    return response.Error(
       http.StatusNotFound,
       errors.New("Page not found"),
     )

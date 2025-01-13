@@ -1,11 +1,11 @@
-package gohf_responses
+package response
 
 import (
 	"context"
 	"errors"
 	"net/http"
 
-	"github.com/gohf-http/gohf/v5"
+	"github.com/gohf-http/gohf/v6"
 )
 
 type TextResponse struct {
@@ -13,7 +13,7 @@ type TextResponse struct {
 	Text   string
 }
 
-func NewTextResponse(statusCode int, text string) TextResponse {
+func Text(statusCode int, text string) TextResponse {
 	return TextResponse{
 		Status: statusCode,
 		Text:   text,
